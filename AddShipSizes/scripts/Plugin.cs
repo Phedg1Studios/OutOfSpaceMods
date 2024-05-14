@@ -16,7 +16,7 @@ namespace Phedg1Studios
 {
     namespace AddShipSizes
     {
-        [BepInPlugin(PluginGUID, "AddShipSizes", "0.0.1")]
+        [BepInPlugin(PluginGUID, "AddShipSizes", "0.0.2")]
         [BepInDependency("com.Phedg1Studios.ChallengesOnOtherShipSizes", BepInDependency.DependencyFlags.SoftDependency)]
 
         public class Plugin : BaseUnityPlugin
@@ -43,7 +43,7 @@ namespace Phedg1Studios
                     { "initialAliensIncreaseEZ", 1 },
                 }},
                 {"GIGA", new Dictionary<string, int>() {
-                    { "rooms", 50 },
+                    { "rooms", 30 },
                     { "roomCells", 28 },
                     { "maxAliensIncrease", 6 },
                     { "maxAliensIncreaseEZ", 3 },

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
-    <AssemblyName>UnlimitedDogs</AssemblyName>
+    <AssemblyName>LogInput</AssemblyName>
     <Description>My first plugin</Description>
     <Version>1.0.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -11,7 +11,7 @@
       https://api.nuget.org/v3/index.json;
       https://nuget.bepinex.dev/v3/index.json
     </RestoreAdditionalProjectSources>
-    <RootNamespace>UnlimitedDogs</RootNamespace>
+    <RootNamespace>LogInput</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -42,8 +42,8 @@
       <HintPath>..\References\Assembly-CSharp.dll</HintPath>
       <Private>false</Private>
     </Reference>
-    <Reference Include="CustomLocalisations">
-      <HintPath>..\CustomLocalisations\Build\CustomLocalisations.dll</HintPath>
+    <Reference Include="CustomInputMappings">
+      <HintPath>..\CustomInputMappings\Build\CustomInputMappings.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="Photon3Unity3D">
@@ -68,6 +68,10 @@
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>..\References\Unity.TextMeshPro.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\References All\UnityEngine.UI.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

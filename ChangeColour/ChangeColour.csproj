@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net46</TargetFramework>
-    <AssemblyName>UnlimitedDogs</AssemblyName>
+    <AssemblyName>ChangeColour</AssemblyName>
     <Description>My first plugin</Description>
     <Version>1.0.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -11,7 +11,7 @@
       https://api.nuget.org/v3/index.json;
       https://nuget.bepinex.dev/v3/index.json
     </RestoreAdditionalProjectSources>
-    <RootNamespace>UnlimitedDogs</RootNamespace>
+    <RootNamespace>ChangeColour</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -42,10 +42,6 @@
       <HintPath>..\References\Assembly-CSharp.dll</HintPath>
       <Private>false</Private>
     </Reference>
-    <Reference Include="CustomLocalisations">
-      <HintPath>..\CustomLocalisations\Build\CustomLocalisations.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
     <Reference Include="Photon3Unity3D">
       <HintPath>..\References\Photon3Unity3D.dll</HintPath>
       <Private>false</Private>
@@ -66,8 +62,16 @@
       <HintPath>..\References\Rewired_Windows.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="SelectionInputs">
+      <HintPath>..\SelectionInputs\Build\SelectionInputs.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>..\References\Unity.TextMeshPro.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\References All\UnityEngine.UI.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

@@ -16,7 +16,8 @@ namespace Phedg1Studios
 {
     namespace UnlimitedDogs
     {
-        [BepInPlugin(PluginGUID, "UnlimitedDogs", "0.0.1")]
+        [BepInPlugin(PluginGUID, "UnlimitedDogs", "0.0.2")]
+        [BepInDependency("com.Phedg1Studios.CustomLocalisations", BepInDependency.DependencyFlags.HardDependency)]
 
         public class Plugin : BaseUnityPlugin
         {
@@ -25,18 +26,13 @@ namespace Phedg1Studios
 
             const string dogShelterTitleLocalizationKey = "UI-Challenge-Title-Shop-ManyPuppies";
             const string dogShelterDescriptionLocalizationKey = "UI-Challenge-Description-Shop-ManyPuppies";
-            private List<string> languages = new List<string>();
-            public string localizationKey = "";
-            public Dictionary<string, Dictionary<string, Dictionary<string, string>>> localizationChanges = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>() {
-                {"English", new Dictionary<string, Dictionary<string, string>>() {
-                    { "UI-Challenge-Description-Shop-ManyPuppies", new Dictionary<string, string>() {
-                        { "up to 3 dogs!", "unlimited dogs!" },
-                    } },
+            public Dictionary<string, Dictionary<string, string>> localisations = new Dictionary<string, Dictionary<string, string>>() {
+                { dogShelterDescriptionLocalizationKey, new Dictionary<string, string>() {
+                    { "English", "You can adopt unlimited dogs!" },
                 } },
             };
 
             private static FieldInfo constructableShopDataLimit;
-            private static FieldInfo dictionaryInfo;
             public FieldInfo firstOpenInfo;
 
             public int dogCost = 60;
@@ -53,7 +49,9 @@ namespace Phedg1Studios
                 Logger.LogInfo($"Plugin {PluginGUID} is loaded!");
                 constructableShopDataLimit = typeof(ConstructableShopData).GetField("limit", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 firstOpenInfo = typeof(ShopManager).GetField("firstOpen", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                dictionaryInfo = typeof(LocalizationManager).GetField("Dictionary", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+                foreach (string guidName in localisations.Keys) {
+                    CustomLocalisations.Plugin.AddLocalisations(guidName, localisations[guidName]);
+                }
             }
 
             [HarmonyPatch(typeof(ChallengeManager))]
@@ -100,51 +98,6 @@ namespace Phedg1Studios
                                 item.Cost = plugin.dogCost;
                             }
                         }
-                    }
-                }
-            }
-
-           
-
-            [HarmonyPatch(typeof(LocalizationManager))]
-            [HarmonyPatch("Localize")]
-            [HarmonyPatch(new System.Type[] { typeof(string), typeof(bool) })]
-            public static class LocalizationGet
-            {
-                static string Postfix(string localizationKey, bool addColorTag, ref string __result) {
-                    string language = LocalizationManager.Language;
-                    if (!plugin.languages.Contains(LocalizationManager.Language)) {
-                        language = "English";
-                    }
-                    if (language != "English") {
-                        return __result;
-                    }
-                    if (plugin.localizationKey != dogShelterDescriptionLocalizationKey) {
-                        return __result;
-                    }
-                    if (!plugin.localizationChanges["English"].ContainsKey(plugin.localizationKey)) {
-                        return __result;
-                    }
-                    foreach (string substr in plugin.localizationChanges["English"][plugin.localizationKey].Keys) {
-                        __result = __result.Replace(substr, plugin.localizationChanges["English"][plugin.localizationKey][substr]);
-                    }
-                    return __result;
-                }
-                
-                static void Prefix(string localizationKey, bool addColorTag) {
-                    plugin.localizationKey = localizationKey;
-                }
-            }
-
-            [HarmonyPatch(typeof(LocalizationManager))]
-            [HarmonyPatch("Read")]
-            public static class LocalizationManagerRead
-            {
-                static void Postfix(string path) {
-                    plugin.languages.Clear();
-                    IDictionary collection = dictionaryInfo.GetValue(null) as IDictionary;
-                    foreach (object key in collection.Keys) {
-                        plugin.languages.Add((string)key);
                     }
                 }
             }
