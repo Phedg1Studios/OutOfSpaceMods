@@ -42,6 +42,10 @@
       <HintPath>..\References\Assembly-CSharp.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="CustomLocalisations">
+      <HintPath>..\CustomLocalisations\Build\CustomLocalisations.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
     <Reference Include="Photon3Unity3D">
       <HintPath>..\References\Photon3Unity3D.dll</HintPath>
       <Private>false</Private>

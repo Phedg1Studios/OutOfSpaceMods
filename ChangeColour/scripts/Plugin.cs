@@ -17,7 +17,7 @@ namespace Phedg1Studios
 {
     namespace ChangeColour
     {
-        [BepInPlugin(PluginGUID, "ChangeColour", "0.0.1")]
+        [BepInPlugin(PluginGUID, "ChangeColour", "0.0.2")]
         [BepInDependency("com.Phedg1Studios.SelectionInputs", BepInDependency.DependencyFlags.HardDependency)]
 
         public class Plugin : BaseUnityPlugin
@@ -33,11 +33,21 @@ namespace Phedg1Studios
             public static string currentPlayerId = null;
             public static List<string> currentPlayerIds = new List<string>();
 
+            public static string changeColourDescriptiveName = PluginGUID + "." + "ChangeColour";
+            public Dictionary<string, Dictionary<string, string>> localisations = new Dictionary<string, Dictionary<string, string>>() {
+                {changeColourDescriptiveName, new Dictionary<string, string>() {
+                    { "English", "Change Color" },
+                } },
+            };
+
 
             private void Awake() {
                 plugin = this;
                 var harmony = new Harmony(PluginGUID);
                 harmony.PatchAll();
+                foreach (string guidName in localisations.Keys) {
+                    CustomLocalisations.Plugin.AddLocalisations(guidName, localisations[guidName]);
+                }
                 Logger.LogInfo($"Plugin {PluginGUID} is loaded!");
             }
             
@@ -270,6 +280,35 @@ namespace Phedg1Studios
             {
                 static bool Prefix(PlayerSelectUI __instance) {
                     return false;
+                }
+            }
+
+            [HarmonyPatch(typeof(PlayerSelectUI))]
+            [HarmonyPatch("Awake")]
+            public static class PlayerSelectUIAwake
+            {
+                static void Postfix(PlayerSelectUI __instance) {
+                    GameObject container = GameObject.Find("[CTN] Change Skin");
+                    GameObject newContainer = GameObject.Instantiate(container, container.transform.parent);
+                    newContainer.transform.SetSiblingIndex(container.transform.GetSiblingIndex());
+                    newContainer.transform.localScale = container.transform.localScale;
+                    newContainer.transform.localPosition = container.transform.localPosition;
+                    newContainer.transform.localPosition = new Vector3(newContainer.transform.localPosition.x, newContainer.transform.localPosition.y - 30, newContainer.transform.localPosition.z);
+                    for (int childIndex = 0; childIndex < newContainer.transform.childCount; childIndex++) {
+                        Transform child = newContainer.transform.GetChild(childIndex);
+                        if (child.name == "[TXT] Change Skin") {
+                            Assets.SimpleLocalization.LocalizedText localizedText = child.GetComponent<Assets.SimpleLocalization.LocalizedText>();
+                            localizedText.UpdateKey(changeColourDescriptiveName);
+                        } else if (child.name == "[PNL] Back" || child.name == "[PNL] Next") {
+                            ControllerGlyph controllerGlyph = child.GetComponent<ControllerGlyph>();
+                            if (child.name == "[PNL] Back") {
+                                controllerGlyph.actionName = SelectionInputs.CustomInputs.prevSelection;
+                            } else if (child.name == "[PNL] Next") {
+                                controllerGlyph.actionName = SelectionInputs.CustomInputs.nextSelection;
+                            }
+                            controllerGlyph.SetLastActiveControllerGlyph();
+                        }
+                    }
                 }
             }
         }
