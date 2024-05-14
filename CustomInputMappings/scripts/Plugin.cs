@@ -17,7 +17,7 @@ namespace Phedg1Studios
 {
     namespace CustomInputMappings
     {
-        [BepInPlugin(PluginGUID, "CustomInputMappings", "0.0.1")]
+        [BepInPlugin(PluginGUID, "CustomInputMappings", "0.0.2")]
         [BepInDependency("com.Phedg1Studios.CustomLocalisations", BepInDependency.DependencyFlags.HardDependency)]
 
         public class Plugin : BaseUnityPlugin {
@@ -63,6 +63,7 @@ namespace Phedg1Studios
             public FieldInfo userDataInfo = typeof(Rewired.ReInput).GetField("MFTggXcZfAYQOmqicqVlwKrEWkj", BindingFlags.NonPublic | BindingFlags.Static);
             public FieldInfo mapCategoryButtonsInfo = typeof(Rewired.UI.ControlMapper.ControlMapper).GetField("mapCategoryButtons", BindingFlags.NonPublic | BindingFlags.Instance);
             public FieldInfo selectableInfo = null;
+            public FieldInfo mappingSetsInfo = typeof(Rewired.UI.ControlMapper.ControlMapper).GetField("_mappingSets", BindingFlags.NonPublic | BindingFlags.Instance);
 
 
             private void Awake() {
@@ -78,6 +79,16 @@ namespace Phedg1Studios
             public static bool AddCustomInput(string guidName, string descriptiveName, bool userEditable) {
                 CustomInput customInput = new CustomInput(guidName, userEditable);
                 return AddCustomInput(customInput);
+            }
+
+            public static int AddCustomInputs(List<CustomInput> customInputs) {
+                int result = 0;
+                foreach (CustomInput customInput in customInputs) {
+                    if (AddCustomInput(customInput)) {
+                        result += 1;
+                    }
+                }
+                return result;
             }
 
             public static bool AddCustomInput(CustomInput customInput) {
@@ -304,6 +315,12 @@ namespace Phedg1Studios
                 return newCategory;
             }
 
+            public static void AddDefaultLayouts(List<DefaultLayout> defaultLayouts) {
+                foreach (DefaultLayout defaultLayout in defaultLayouts) {
+                    AddDefaultLayout(defaultLayout);
+                }
+            }
+
             public static void AddDefaultLayout(DefaultLayout defaultLayout) {
                 plugin.defaultLayouts.Add(defaultLayout);
             }
@@ -373,8 +390,16 @@ namespace Phedg1Studios
                 }
             }
 
+            public static void AddLocalisations(Dictionary<string, Dictionary<string, string>> localisations) {
+                CustomLocalisations.Plugin.AddLocalisations(localisations);
+            }
+
             public static void AddLocalisations(string guidName, Dictionary<string, string> localisations) {
                 CustomLocalisations.Plugin.AddLocalisations(guidName, localisations);
+            }
+
+            public static void AddLocalisation(string guidName, string language, string localisation) {
+                CustomLocalisations.Plugin.AddLocalisation(guidName, language, localisation);
             }
 
             public void GeneratePaths() {
@@ -482,8 +507,8 @@ namespace Phedg1Studios
                 static void Prefix(Rewired.UI.ControlMapper.ControlMapper __instance) {
                     Rewired.Data.UserData userData = plugin.userDataInfo.GetValue(null) as Rewired.Data.UserData;
 
-                    FieldInfo mappingSetsInfo = typeof(Rewired.UI.ControlMapper.ControlMapper).GetField("_mappingSets", BindingFlags.NonPublic | BindingFlags.Instance);
-                    ICollection collection = mappingSetsInfo.GetValue(__instance) as ICollection;
+                    
+                    ICollection collection = plugin.mappingSetsInfo.GetValue(__instance) as ICollection;
                     List<Rewired.UI.ControlMapper.ControlMapper.MappingSet> mappingSets = new List<Rewired.UI.ControlMapper.ControlMapper.MappingSet>();
                     foreach (object item in collection) {
                         mappingSets.Add((Rewired.UI.ControlMapper.ControlMapper.MappingSet)item);
@@ -492,7 +517,7 @@ namespace Phedg1Studios
                     foreach (int categoryId in presentCategories) {
                         mappingSets.Add(System.Activator.CreateInstance(typeof(Rewired.UI.ControlMapper.ControlMapper.MappingSet), BindingFlags.NonPublic | BindingFlags.Instance, null, new object[] { categoryId, Rewired.UI.ControlMapper.ControlMapper.MappingSet.ActionListMode.ActionCategory, new int[] { categoryId }, new int[] { } }, null, null) as Rewired.UI.ControlMapper.ControlMapper.MappingSet);
                     }
-                    mappingSetsInfo.SetValue(__instance, mappingSets.ToArray());
+                    plugin.mappingSetsInfo.SetValue(__instance, mappingSets.ToArray());
 
                     Rewired.Data.Mapping.ActionCategoryMap actionCategoryMap = plugin.actionCategoryMapInfo.GetValue(userData) as Rewired.Data.Mapping.ActionCategoryMap;
                     ICollection listCollection = plugin.listInfo.GetValue(actionCategoryMap) as ICollection;

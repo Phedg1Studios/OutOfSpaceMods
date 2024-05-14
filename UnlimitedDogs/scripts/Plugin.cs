@@ -16,7 +16,7 @@ namespace Phedg1Studios
 {
     namespace UnlimitedDogs
     {
-        [BepInPlugin(PluginGUID, "UnlimitedDogs", "0.0.2")]
+        [BepInPlugin(PluginGUID, "UnlimitedDogs", "0.0.3")]
         [BepInDependency("com.Phedg1Studios.CustomLocalisations", BepInDependency.DependencyFlags.HardDependency)]
 
         public class Plugin : BaseUnityPlugin
@@ -32,8 +32,8 @@ namespace Phedg1Studios
                 } },
             };
 
-            private static FieldInfo constructableShopDataLimit;
-            public FieldInfo firstOpenInfo;
+            private static FieldInfo constructableShopDataLimit = typeof(ConstructableShopData).GetField("limit", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            public FieldInfo firstOpenInfo = typeof(ShopManager).GetField("firstOpen", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
             public int dogCost = 60;
             public int freeDogLimit = 3;
@@ -47,11 +47,7 @@ namespace Phedg1Studios
                 var harmony = new Harmony(PluginGUID);
                 harmony.PatchAll();
                 Logger.LogInfo($"Plugin {PluginGUID} is loaded!");
-                constructableShopDataLimit = typeof(ConstructableShopData).GetField("limit", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                firstOpenInfo = typeof(ShopManager).GetField("firstOpen", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                foreach (string guidName in localisations.Keys) {
-                    CustomLocalisations.Plugin.AddLocalisations(guidName, localisations[guidName]);
-                }
+                CustomLocalisations.Plugin.AddLocalisations(localisations);
             }
 
             [HarmonyPatch(typeof(ChallengeManager))]

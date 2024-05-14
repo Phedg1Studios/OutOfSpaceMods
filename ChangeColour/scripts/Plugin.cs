@@ -17,7 +17,7 @@ namespace Phedg1Studios
 {
     namespace ChangeColour
     {
-        [BepInPlugin(PluginGUID, "ChangeColour", "0.0.2")]
+        [BepInPlugin(PluginGUID, "ChangeColour", "0.0.3")]
         [BepInDependency("com.Phedg1Studios.SelectionInputs", BepInDependency.DependencyFlags.HardDependency)]
 
         public class Plugin : BaseUnityPlugin
@@ -45,9 +45,7 @@ namespace Phedg1Studios
                 plugin = this;
                 var harmony = new Harmony(PluginGUID);
                 harmony.PatchAll();
-                foreach (string guidName in localisations.Keys) {
-                    CustomLocalisations.Plugin.AddLocalisations(guidName, localisations[guidName]);
-                }
+                CustomLocalisations.Plugin.AddLocalisations(localisations);
                 Logger.LogInfo($"Plugin {PluginGUID} is loaded!");
             }
             

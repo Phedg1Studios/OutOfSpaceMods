@@ -17,7 +17,7 @@ namespace Phedg1Studios
 {
     namespace CustomLocalisations
     {
-        [BepInPlugin(PluginGUID, "CustomLocalisations", "0.0.1")]
+        [BepInPlugin(PluginGUID, "CustomLocalisations", "0.0.2")]
 
         public class Plugin : BaseUnityPlugin
         {
@@ -38,16 +38,26 @@ namespace Phedg1Studios
                 Logger.LogInfo($"Plugin {PluginGUID} is loaded!");
             }
 
+            public static void AddLocalisations(Dictionary<string, Dictionary<string, string>> localisations) {
+                foreach (string descriptiveName in localisations.Keys) {
+                    AddLocalisations(descriptiveName, localisations[descriptiveName]);
+                }
+            }
+
             public static void AddLocalisations(string descriptiveName, Dictionary<string, string> localisations) {
                 foreach (string language in localisations.Keys) {
-                    if (!plugin.localizations.ContainsKey(language)) {
-                        plugin.localizations.Add(language, new Dictionary<string, string>());
-                    }
-                    if (!plugin.localizations[language].ContainsKey(descriptiveName)) {
-                        plugin.localizations[language].Add(descriptiveName, "");
-                    }
-                    plugin.localizations[language][descriptiveName] = localisations[language];
+                    AddLocalisation(descriptiveName, language, localisations[language]);
                 }
+            }
+
+            public static void AddLocalisation(string descriptiveName, string language, string localisation) {
+                if (!plugin.localizations.ContainsKey(language)) {
+                    plugin.localizations.Add(language, new Dictionary<string, string>());
+                }
+                if (!plugin.localizations[language].ContainsKey(descriptiveName)) {
+                    plugin.localizations[language].Add(descriptiveName, "");
+                }
+                plugin.localizations[language][descriptiveName] = localisation;
             }
 
             [HarmonyPatch(typeof(LocalizationManager))]

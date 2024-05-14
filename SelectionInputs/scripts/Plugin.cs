@@ -17,7 +17,7 @@ namespace Phedg1Studios
 {
     namespace SelectionInputs
     {
-        [BepInPlugin(PluginGUID, "SelectionInputs", "0.0.1")]
+        [BepInPlugin(PluginGUID, "SelectionInputs", "0.0.2")]
         [BepInDependency("com.Phedg1Studios.CustomInputMappings", BepInDependency.DependencyFlags.HardDependency)]
 
         public class Plugin : BaseUnityPlugin
@@ -76,15 +76,9 @@ namespace Phedg1Studios
                 plugin = this;
                 var harmony = new Harmony(PluginGUID);
                 harmony.PatchAll();
-                foreach (CustomInputMappings.CustomInput customAction in customActions) {
-                    CustomInputMappings.Plugin.AddCustomInput(customAction);
-                }
-                foreach (CustomInputMappings.DefaultLayout defaultLayout in defaultLayouts) {
-                    CustomInputMappings.Plugin.AddDefaultLayout(defaultLayout);
-                }
-                foreach (string guidName in localisations.Keys) {
-                    CustomInputMappings.Plugin.AddLocalisations(guidName, localisations[guidName]);
-                }
+                CustomInputMappings.Plugin.AddCustomInputs(customActions);
+                CustomInputMappings.Plugin.AddDefaultLayouts(defaultLayouts);
+                CustomInputMappings.Plugin.AddLocalisations(localisations);
                 Logger.LogInfo($"Plugin {PluginGUID} is loaded!");
             }
         }

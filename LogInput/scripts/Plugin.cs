@@ -17,7 +17,7 @@ namespace Phedg1Studios
 {
     namespace LogInput
     {
-        [BepInPlugin(PluginGUID, "ChangeColour", "0.0.1")]
+        [BepInPlugin(PluginGUID, "ChangeColour", "0.0.2")]
         [BepInDependency("com.Phedg1Studios.CustomInputMappings", BepInDependency.DependencyFlags.HardDependency)]
 
         public class Plugin : BaseUnityPlugin
@@ -48,14 +48,10 @@ namespace Phedg1Studios
                 plugin = this;
                 var harmony = new Harmony(PluginGUID);
                 harmony.PatchAll();
-                Logger.LogInfo($"Plugin {PluginGUID} is loaded!");
-                foreach (CustomInputMappings.CustomInput customAction in customActions) {
-                    CustomInputMappings.Plugin.AddCustomInput(customAction);
-                }
-                foreach (string guidName in localisations.Keys) {
-                    CustomInputMappings.Plugin.AddLocalisations(guidName, localisations[guidName]);
-                }
+                CustomInputMappings.Plugin.AddCustomInputs(customActions);
+                CustomInputMappings.Plugin.AddLocalisations(localisations);
                 PatchSpecialMethods(harmony);
+                Logger.LogInfo($"Plugin {PluginGUID} is loaded!");
             }
 
             public static void PatchSpecialMethods(Harmony harmony) {
