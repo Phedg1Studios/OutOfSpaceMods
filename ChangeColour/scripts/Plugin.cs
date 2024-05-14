@@ -291,7 +291,7 @@ namespace Phedg1Studios
                     newContainer.transform.SetSiblingIndex(container.transform.GetSiblingIndex());
                     newContainer.transform.localScale = container.transform.localScale;
                     newContainer.transform.localPosition = container.transform.localPosition;
-                    newContainer.transform.localPosition = new Vector3(newContainer.transform.localPosition.x, newContainer.transform.localPosition.y - 30, newContainer.transform.localPosition.z);
+                    newContainer.transform.localPosition = new Vector3(newContainer.transform.localPosition.x + 15, newContainer.transform.localPosition.y - 30, newContainer.transform.localPosition.z);
                     for (int childIndex = 0; childIndex < newContainer.transform.childCount; childIndex++) {
                         Transform child = newContainer.transform.GetChild(childIndex);
                         if (child.name == "[TXT] Change Skin") {
